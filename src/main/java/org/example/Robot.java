@@ -2,14 +2,12 @@ package org.example;
 
 public class Robot extends Thread{
 
-    private boolean tieneKriptonita;
-    private boolean tieneBateria;
+    private String nombre;
     private Base base;
 
-    public Robot(Base base) {
-        tieneBateria=false;
-        tieneKriptonita=false;
+    public Robot(Base base, String nombre) {
         this.base=base;
+        this.nombre=nombre;
     }
 
     @Override
@@ -19,40 +17,49 @@ public class Robot extends Thread{
         trabajar();
     }
 
-    public void cargar(){
-        if (base.getKriptonitas()>0) {
-            base.setKriptonitas(base.getKriptonitas() - 1);
-            System.out.println("Un robot cogio una kriptonita");
+    public synchronized void cargar(){
+        while (base.getKriptonitas()<=0){
             try {
                 wait();
             } catch (InterruptedException e) {
-                System.out.println("a");
+                throw new RuntimeException(e);
             }
-            if (base.getBaterias() > 0) {
-                base.setBaterias(base.getBaterias() - 1);
-                System.out.println("Un robot cogio una bateria");
-
-            }
-        }else {
-            notifyAll();
-
         }
+
+        base.setKriptonitas(base.getKriptonitas()-1);
+        System.out.println(nombre+" ha cogido una Kriptonita");
+        notifyAll();
+
+        while (base.getBaterias()<=0){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        base.setBaterias(base.getBaterias()-1);
+        System.out.println(nombre+" ha cogido una Bateria");
+        notifyAll();
+
     }
-    public void descargar(){
+    public synchronized void descargar(){
         base.setBaterias(base.getBaterias()+1);
         base.setPiedras(base.getPiedras()+10);
         base.setKriptonitas(base.getKriptonitas()+1);
+
     }
     public synchronized void trabajar(){
         try {
-            System.out.println(this.getName()+" ha salido a trabajar");
-            wait(5000);
+            System.out.println(nombre+" ha salido a trabajar");
+            Thread.sleep(5000);
             descargar();
-            System.out.println(this.getName()+" ha recogido 10 piedras");
+            System.out.println(nombre+" ha recogido 10 piedras");
             System.out.println("Kriptonitas en la base: "+base.getKriptonitas());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }notifyAll();
+        }
+        notifyAll();
 
 
     }
