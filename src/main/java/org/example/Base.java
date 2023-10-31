@@ -20,20 +20,20 @@ public class Base extends Thread {
         super.run();
 
 
-        while (true) {
-            Robot robot1 = new Robot(this,"Angel");
-            Robot robot2 = new Robot(this,"Lucas");
-            Robot robot3 = new Robot(this,"Raul");
-            Robot robot4 = new Robot(this,"Dani");
-            Robot robot5 = new Robot(this,"Joni");
 
-            robot1.start();
-            robot2.start();
-            robot3.start();
-            robot4.start();
-            robot5.start();
+        Robot robot1 = new Robot(this,"Angel");
+        Robot robot2 = new Robot(this,"Lucas");
+        Robot robot3 = new Robot(this,"Raul");
+        Robot robot4 = new Robot(this,"Dani");
+        Robot robot5 = new Robot(this,"Joni");
 
-        }
+        robot1.start();
+        robot2.start();
+        robot3.start();
+        robot4.start();
+        robot5.start();
+
+
 
     }
 

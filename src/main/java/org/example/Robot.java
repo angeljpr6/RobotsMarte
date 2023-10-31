@@ -4,10 +4,12 @@ public class Robot extends Thread{
 
     private String nombre;
     private Base base;
+    private static MonitorRobots monitorRobots = new MonitorRobots();
 
     public Robot(Base base, String nombre) {
         this.base=base;
         this.nombre=nombre;
+
     }
 
     @Override
@@ -19,11 +21,7 @@ public class Robot extends Thread{
 
     public synchronized void cargar(){
         while (base.getKriptonitas()<=0){
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            monitorRobots.esperar();
         }
 
         base.setKriptonitas(base.getKriptonitas()-1);
@@ -31,11 +29,7 @@ public class Robot extends Thread{
         notifyAll();
 
         while (base.getBaterias()<=0){
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            monitorRobots.esperar();
         }
 
         base.setBaterias(base.getBaterias()-1);
@@ -59,7 +53,7 @@ public class Robot extends Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        notifyAll();
+        monitorRobots.notificar();
 
 
     }
